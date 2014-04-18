@@ -1,12 +1,9 @@
 ```erlang
 $ erl                                                                                                                                                                      [22:59:08]
-Erlang R16B02 (erts-5.10.3) [source] [64-bit] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false]
-
-Eshell V5.10.3  (abort with ^G)
-1>
-1> Parts = 10.
+>
+> Parts = 10.
 10
-2> Ring =
+> Ring =
     lists:foldl( fun (R1, R2) -> chash:merge_rings(R1, R2) end
                , chash:fresh(Parts, node_1)
                , [ chash:fresh(Parts, node_2)
@@ -25,42 +22,42 @@ Eshell V5.10.3  (abort with ^G)
   {1169201309864722334562947866173026415724746034376,node_2},
   {1315351473597812626383316349444654717690339288673,node_3},
   {1461501637330902918203684832716283019655932542970,node_3}]}
-3>
-3> Hash = chashbin:create(Ring).
+>
+> Hash = chashbin:create(Ring).
 {chashbin,10,
           <<0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,25,153,153,
             153,...>>,
           {node_1,node_2,node_3}}
-4>
-4> Data2Node =
-4>     fun (Data) ->
-4>         SHA1 = crypto:sha(term_to_binary(Data)),
-4>         Index = chashbin:responsible_index(SHA1, Hash),
-4>         Node = chash:lookup(Index, Ring),
-4>         Node
-4>     end.
+>
+> Data2Node =
+>     fun (Data) ->
+>         SHA1 = crypto:sha(term_to_binary(Data)),
+>         Index = chashbin:responsible_index(SHA1, Hash),
+>         Node = chash:lookup(Index, Ring),
+>         Node
+>     end.
 #Fun<erl_eval.6.80484245>
-5>
-5> Data2Node(123).
+>
+> Data2Node(123).
 node_1
-6>
-6> Data2Node(abcdefg).
+>
+> Data2Node(abcdefg).
 node_1
-7>
-7> Data2Node(1).
+>
+> Data2Node(1).
 node_1
-8>
-8> Data2Node(<<"foo-bar-baz">>).
+>
+> Data2Node(<<"foo-bar-baz">>).
 node_3
-9>
-9>
-9> Data2Node(<<"">>).
+>
+>
+> Data2Node(<<"">>).
 node_1
-10>
-10> Data2Node(987).
+>
+> Data2Node(987).
 node_3
-10>
-11> Data2Node(12345).
+>
+> Data2Node(12345).
 node_2
-11>
+>
 ```
