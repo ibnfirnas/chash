@@ -3,12 +3,13 @@ $ erl                                                                           
 >
 > Parts = 10.
 10
+> [Node | Nodes] = [node_1, node_2, node_3].
+[node_1,node_2,node_3]
+>
 > Ring =
     lists:foldl( fun (R1, R2) -> chash:merge_rings(R1, R2) end
-               , chash:fresh(Parts, node_1)
-               , [ chash:fresh(Parts, node_2)
-                 , chash:fresh(Parts, node_3)
-                 ]
+               , chash:fresh(Parts, Node)
+               , [chash:fresh(Parts, N) || N <- Nodes]
                ).
 {10,
  [{0,node_3},
