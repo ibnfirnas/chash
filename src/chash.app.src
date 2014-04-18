@@ -1,0 +1,11 @@
+{application, chash,
+ [
+  {description, "Consistent hashing code from riak_core."},
+  {vsn, "2.0.0"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {env, []}
+ ]}.
