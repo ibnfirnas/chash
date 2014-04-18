@@ -40,6 +40,7 @@
          key_of/1,
          members/1,
          merge_rings/2,
+         merge_rings_evenly/2,
          next_index/2,
          nodes/1,
          predecessors/2,
@@ -127,6 +128,26 @@ merge_rings(CHashA,CHashB) ->
     {NumPartitions, NodesB} = CHashB,
     {NumPartitions, [{I,random_node(A,B)} ||
            {{I,A},{I,B}} <- lists:zip(NodesA,NodesB)]}.
+
+%% @doc Return an evenly balanced merge of two rings.
+-spec merge_rings_evenly(chash(), chash()) -> chash().
+merge_rings_evenly(CHashA, CHashB) ->
+    {NumPartitions, LocationMapA} = CHashA,
+    {NumPartitions, LocationMapB} = CHashB,
+    LocationMaps = LocationMapA ++ LocationMapB,
+    Indices = lists:usort([I || {I, _} <- LocationMaps]),
+    Nodes   = lists:usort([N || {_, N} <- LocationMaps]),
+    RotateNode =
+        fun (Index, {LocationMapC, NodeQueue1}) ->
+            {{value, Node}, NodeQueue2} = queue:out(NodeQueue1),
+            NodeQueue3 = queue:in(Node, NodeQueue2),
+            {[{Index, Node} | LocationMapC], NodeQueue3}
+        end,
+    {LocationMapC, _} = lists:foldl( RotateNode
+                                   , {[], queue:from_list(Nodes)}
+                                   , Indices
+                                   ),
+    {NumPartitions, LocationMapC}.
 
 %% @doc Given the integer representation of a chash key,
 %%      return the next ring index integer value.
