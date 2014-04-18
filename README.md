@@ -6,7 +6,13 @@ Eshell V5.10.3  (abort with ^G)
 1>
 1> Parts = 10.
 10
-2>  Ring = lists:foldl(fun (R1, R2) -> chash:merge_rings(R1, R2) end, chash:fresh(Parts, node_1), [chash:fresh(Parts, node_2), chash:fresh(Parts, node_3)]).
+2> Ring =
+    lists:foldl( fun (R1, R2) -> chash:merge_rings(R1, R2) end
+               , chash:fresh(Parts, node_1)
+               , [ chash:fresh(Parts, node_2)
+                 , chash:fresh(Parts, node_3)
+                 ]
+               ).
 {10,
  [{0,node_3},
   {146150163733090291820368483271628301965593254297,node_1},
